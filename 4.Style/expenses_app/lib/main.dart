@@ -1,4 +1,6 @@
-import './widgets/user_transactions.dart';
+import './widgets/transaction_list.dart';
+import './widgets/new_transaction.dart';
+import './models/transaction.dart';
 import 'package:flutter/material.dart';
 
 void main() => runApp(MyApp());
@@ -13,12 +15,63 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+class MyHomePage extends StatefulWidget {
+  @override
+  _MyHomePage createState() => _MyHomePage();
+}
+
+class _MyHomePage extends State<MyHomePage> {
+
+  final List<Transaction> _userTransactions = [
+    Transaction(
+      id: 't1',
+      title: 'New Shows',
+      amount: 69.99,
+      date: DateTime.now(),
+    ),
+    Transaction(
+      id: 't2',
+      title: 'Weekly Groceries',
+      amount: 16.53,
+      date: DateTime.now(),
+    ),
+  ];
+
+  void _addNewTransaction(String txTitle, double txAmount) {
+    final newTx = Transaction(
+      title: txTitle,
+      amount: txAmount,
+      date: DateTime.now(),
+      id: DateTime.now().toString(),
+    );
+
+    //Dart save objects in memory and only store pointer at these  objects
+    //The pointer, the address itself is final, so cant do userTransaction = blablabla
+    //But the values are not final, so we can manipulate the list cause that doesnt change the pointer
+
+    setState(() {
+      //This method add a new transaction but no change the address or the pointer
+      _userTransactions.add(newTx);
+    });
+  }
+
+  void _startAddNewTransaction(BuildContext ctx){
+    showModalBottomSheet(context: ctx, builder: (_){
+      return NewTransaction(_addNewTransaction);
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Flutter App'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.add),
+            onPressed: () => _startAddNewTransaction(context),
+          ),
+        ],
       ),
       //SingleChildScrollView has to be in the body to know what size to take, the height to take.
       //If you have to put it in another part, you can put a container with a height and then put it
@@ -42,9 +95,14 @@ class MyHomePage extends StatelessWidget {
                 elevation: 5,
               ),
             ),
-            UserTransactions(),
+            TransactionList(_userTransactions),
           ],
         ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _startAddNewTransaction(context),
       ),
     );
   }

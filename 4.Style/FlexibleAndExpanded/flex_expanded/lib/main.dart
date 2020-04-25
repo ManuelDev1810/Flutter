@@ -84,9 +84,12 @@ class _MyHomePageState extends State<MyHomePage> {
           //in that row or column that it would normally take, to do that do this
           Flexible(
             //The default is loose: the child can be at most at large as the available space
-            //Tight: The child is force to take the available space....
+            //Tight: The child is force to take the available space....    
+            //Expanded widget is Flexible with tight
             //So it doesnt matter that you put  a width
             fit: FlexFit.tight,
+            //If you put 2 it is going to take the 2 of three because the other one is 1 by default
+            flex: 5,
             child: Container(
               height: 100,
               child: Text('Item 2'),
@@ -96,7 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
           //Now thos and the second container are going to split the spaces, and the second that has nothing..
           //.. I mean does not its flexible is not going take nothing
           Flexible(
-            fit: FlexFit.tight,
             child: Container(
               height: 100,
               child: Text('Item 3'),

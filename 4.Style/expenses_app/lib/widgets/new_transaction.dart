@@ -1,12 +1,22 @@
 import 'package:flutter/material.dart';
 
-class NewTransaction extends StatelessWidget {
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
-  final Function addTx;
+//Right now when you put data into a text field and the to other, the data get lose
+//To get this worked you have to convert this class into a statufull widget
+//It will be basically maintained and not rebuily as ofen easily
 
-  //Getting the pointer to the function in UserTransaction
+
+class NewTransaction extends StatefulWidget {
+  final Function addTx;
   NewTransaction(this.addTx);
+
+  @override
+  _NewTransactionState createState() => _NewTransactionState();
+}
+
+class _NewTransactionState extends State<NewTransaction> {
+  final titleController = TextEditingController();
+
+  final amountController = TextEditingController();
 
   void submitData() {
     final enteredTitle = titleController.text;
@@ -16,10 +26,14 @@ class NewTransaction extends StatelessWidget {
       return;
     }
 
-    addTx(
+    //With widget property you can use the things in your statufull class
+    widget.addTx(
       titleController.text,
       double.parse(amountController.text),
     );
+
+    //It close the modal
+    Navigator.of(context).pop();
   }
 
   @override

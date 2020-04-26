@@ -119,10 +119,14 @@ class _MyHomePage extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final isLandScape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     final appBar = AppBar(
       title: Text(
         'Personal Expenses',
       ),
+
       actions: <Widget>[
         IconButton(
           icon: Icon(Icons.add),
@@ -130,6 +134,15 @@ class _MyHomePage extends State<MyHomePage> {
         ),
       ],
     );
+    
+    final txListWidget = Container(
+      height: (MediaQuery.of(context).size.height -
+              appBar.preferredSize.height -
+              MediaQuery.of(context).padding.top) *
+          0.7,
+      child: TransactionList(_userTransactions, _deleteTransaction),
+    );
+    
     return Scaffold(
       appBar: appBar,
       //SingleChildScrollView has to be in the body to know what size to take, the height to take.
@@ -138,22 +151,32 @@ class _MyHomePage extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text('Show Chart'),
-                //This widget works with onChange so you habe to be in a statefull class
-                Switch(
-                  value: _showChart,
-                  onChanged: (val) {
-                    setState(() {
-                      _showChart = val;
-                    });
-                  },
-                ),
-              ],
-            ),
-            _showChart
+            if (isLandScape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Text('Show Chart'),
+                  //This widget works with onChange so you habe to be in a statefull class
+                  Switch(
+                    value: _showChart,
+                    onChanged: (val) {
+                      setState(() {
+                        _showChart = val;
+                      });
+                    },
+                  ),
+                ],
+              ),
+            if (!isLandScape)
+              Container(
+                height: (MediaQuery.of(context).size.height -
+                        appBar.preferredSize.height -
+                        MediaQuery.of(context).padding.top) *
+                    0.3,
+                child: Chart(_recentTransactions),
+              ),
+            if(!isLandScape) txListWidget,
+            if(isLandScape)_showChart
                 ? Container(
                     height: (MediaQuery.of(context).size.height -
                             appBar.preferredSize.height -
@@ -161,14 +184,7 @@ class _MyHomePage extends State<MyHomePage> {
                         0.7,
                     child: Chart(_recentTransactions),
                   )
-                : Container(
-                    height: (MediaQuery.of(context).size.height -
-                            appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
-                        0.7,
-                    child:
-                        TransactionList(_userTransactions, _deleteTransaction),
-                  ),
+                : txListWidget
           ],
         ),
       ),

@@ -29,26 +29,30 @@ class TransactionList extends StatelessWidget {
     //ListView.builder is can of better, because does not render all., ListView does
     //ListView.builder only render whats visible
     return transactions.isEmpty
-        ? Column(
-            children: <Widget>[
-              Text(
-                'Not images yet',
-                style: Theme.of(context).textTheme.title,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              //BoxFit.Cover will give us an error if we put it without the container because...
-              //...Because the direc parent is the column and you know that has no limite
-              Container(
-                height: 200,
-                child: Image.asset(
-                  'assets/images/waiting.png',
-                  fit: BoxFit.cover,
+        //You have a problem with image in landscape mode, it has to height, now you have in the main..
+        //That this widget will take only the 70% with mediaquery, so you can put a constrain here
+        ? LayoutBuilder(builder: (ctx, constrains) {
+            return Column(
+              children: <Widget>[
+                Text(
+                  'Not images yet',
+                  style: Theme.of(context).textTheme.title,
                 ),
-              )
-            ],
-          )
+                SizedBox(
+                  height: 20,
+                ),
+                //BoxFit.Cover will give us an error if we put it without the container because...
+                //...Because the direc parent is the column and you know that has no limite
+                Container(
+                  height: constrains.maxHeight * 0.6,
+                  child: Image.asset(
+                    'assets/images/waiting.png',
+                    fit: BoxFit.cover,
+                  ),
+                )
+              ],
+            );
+          })
         : ListView.builder(
             itemBuilder: (ctx, index) {
               return Card(

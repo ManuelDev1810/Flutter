@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -122,22 +123,39 @@ class _MyHomePage extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
-    final isLandScape =
-        mediaQuery.orientation == Orientation.landscape;
+    final isLandScape = mediaQuery.orientation == Orientation.landscape;
 
-    final appBar = AppBar(
-      title: Text(
-        'Personal Expenses',
-      ),
+    final PreferredSizeWidget appBar = Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text(
+              'Personal Expenses',
+            ),
+            //We cant put the IconButton cause is a MaterialDesing so is for android it will be use an error in..
+            //.. the Cupertino, so lets create our own button
+            trailing: Row(
+              //There is a problem an it is that the text above is not showing up, thats cause the width of the..
+              //Row is to large so lets use mainAxisSize, that by default take all the width as it can
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                GestureDetector(
+                  child: Icon(CupertinoIcons.add),
+                  onTap: () => _startAddNewTransaction(context),
+                ),
+              ],
+            ),
+          )
+        : AppBar(
+            title: Text(
+              'Personal Expenses',
+            ),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => _startAddNewTransaction(context),
+              ),
+            ],
+          );
 
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () => _startAddNewTransaction(context),
-        ),
-      ],
-    );
-    
     final txListWidget = Container(
       height: (mediaQuery.size.height -
               appBar.preferredSize.height -
@@ -145,12 +163,12 @@ class _MyHomePage extends State<MyHomePage> {
           0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
-    
-    return Scaffold(
-      appBar: appBar,
-      //SingleChildScrollView has to be in the body to know what size to take, the height to take.
-      //If you have to put it in another part, you can put a container with a height and then put it
-      body: SingleChildScrollView(
+
+    //There is a problem in the iphones 10 or more because they have an space in the header and the bottom
+    //So the chart is not showing up, for solve this we use SafeArea
+    //And we this we just make sure that everything is positioned within the boundries
+    final pageBody = SafeArea(
+      child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -158,8 +176,10 @@ class _MyHomePage extends State<MyHomePage> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text('Show Chart'),
-                  //This widget works with onChange so you habe to be in a statefull class
+                  //When you are land scape on ios there ir a problem and text is to big...
+                  //.. the reason for that is in Cupertino we dont automatically get a theme
+                  //To solve this, change the MaterialApp for a CopurtinoApp or put your own theme
+                  Text('Show Chart', style: Theme.of(context).textTheme.title,),
                   //You can put or no the adaptive method that make that the switch change depending..
                   //if you are using IOS or Android, this thing is for a couple of widgets
                   Switch.adaptive(
@@ -181,25 +201,41 @@ class _MyHomePage extends State<MyHomePage> {
                     0.3,
                 child: Chart(_recentTransactions),
               ),
-            if(!isLandScape) txListWidget,
-            if(isLandScape)_showChart
-                ? Container(
-                    height: (mediaQuery.size.height -
-                            appBar.preferredSize.height -
-                            mediaQuery.padding.top) *
-                        0.7,
-                    child: Chart(_recentTransactions),
-                  )
-                : txListWidget
+            if (!isLandScape) txListWidget,
+            if (isLandScape)
+              _showChart
+                  ? Container(
+                      height: (mediaQuery.size.height -
+                              appBar.preferredSize.height -
+                              mediaQuery.padding.top) *
+                          0.7,
+                      child: Chart(_recentTransactions),
+                    )
+                  : txListWidget
           ],
         ),
       ),
-      //The floating button is internally configured to use the alternavy color, the accent color
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Platform.isIOS ? Container() : FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => _startAddNewTransaction(context),
-      ),
     );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            navigationBar: appBar,
+            child: pageBody,
+          )
+        : Scaffold(
+            appBar: appBar,
+            //SingleChildScrollView has to be in the body to know what size to take, the height to take.
+            //If you have to put it in another part, you can put a container with a height and then put it
+            body: pageBody,
+            //The floating button is internally configured to use the alternavy color, the accent color
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Platform.isIOS
+                ? Container()
+                : FloatingActionButton(
+                    child: Icon(Icons.add),
+                    onPressed: () => _startAddNewTransaction(context),
+                  ),
+          );
   }
 }

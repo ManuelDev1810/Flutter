@@ -1,10 +1,21 @@
+import 'package:flutter/services.dart';
+
 import './widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
 import './widgets/chart.dart';
 import './models/transaction.dart';
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  //This is necessary because if its not in some devices wont work
+  WidgetsFlutterBinding.ensureInitialized();
+  //SystemChrome allow you to set some application wide settings for your app
+  SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
+  ]);
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   @override
@@ -139,13 +150,15 @@ class _MyHomePage extends State<MyHomePage> {
 
             Container(
               height: (MediaQuery.of(context).size.height -
-                      appBar.preferredSize.height - MediaQuery.of(context).padding.top) *
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
                   0.3,
               child: Chart(_recentTransactions),
             ),
             Container(
               height: (MediaQuery.of(context).size.height -
-                      appBar.preferredSize.height - MediaQuery.of(context).padding.top) *
+                      appBar.preferredSize.height -
+                      MediaQuery.of(context).padding.top) *
                   0.7,
               child: TransactionList(_userTransactions, _deleteTransaction),
             ),

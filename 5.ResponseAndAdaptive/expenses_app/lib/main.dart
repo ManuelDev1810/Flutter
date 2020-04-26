@@ -1,10 +1,12 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import './widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
 import './widgets/chart.dart';
 import './models/transaction.dart';
-import 'package:flutter/material.dart';
 
 void main() {
   //This is necessary because if its not in some devices wont work
@@ -119,8 +121,9 @@ class _MyHomePage extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
     final isLandScape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+        mediaQuery.orientation == Orientation.landscape;
 
     final appBar = AppBar(
       title: Text(
@@ -136,9 +139,9 @@ class _MyHomePage extends State<MyHomePage> {
     );
     
     final txListWidget = Container(
-      height: (MediaQuery.of(context).size.height -
+      height: (mediaQuery.size.height -
               appBar.preferredSize.height -
-              MediaQuery.of(context).padding.top) *
+              mediaQuery.padding.top) *
           0.7,
       child: TransactionList(_userTransactions, _deleteTransaction),
     );
@@ -157,7 +160,10 @@ class _MyHomePage extends State<MyHomePage> {
                 children: <Widget>[
                   Text('Show Chart'),
                   //This widget works with onChange so you habe to be in a statefull class
-                  Switch(
+                  //You can put or no the adaptive method that make that the switch change depending..
+                  //if you are using IOS or Android, this thing is for a couple of widgets
+                  Switch.adaptive(
+                    activeColor: Theme.of(context).accentColor,
                     value: _showChart,
                     onChanged: (val) {
                       setState(() {
@@ -169,18 +175,18 @@ class _MyHomePage extends State<MyHomePage> {
               ),
             if (!isLandScape)
               Container(
-                height: (MediaQuery.of(context).size.height -
+                height: (mediaQuery.size.height -
                         appBar.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
+                        mediaQuery.padding.top) *
                     0.3,
                 child: Chart(_recentTransactions),
               ),
             if(!isLandScape) txListWidget,
             if(isLandScape)_showChart
                 ? Container(
-                    height: (MediaQuery.of(context).size.height -
+                    height: (mediaQuery.size.height -
                             appBar.preferredSize.height -
-                            MediaQuery.of(context).padding.top) *
+                            mediaQuery.padding.top) *
                         0.7,
                     child: Chart(_recentTransactions),
                   )
@@ -190,7 +196,7 @@ class _MyHomePage extends State<MyHomePage> {
       ),
       //The floating button is internally configured to use the alternavy color, the accent color
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: Platform.isIOS ? Container() : FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () => _startAddNewTransaction(context),
       ),

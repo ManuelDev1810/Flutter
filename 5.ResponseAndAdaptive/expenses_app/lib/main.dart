@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import './widgets/transaction_list.dart';
 import './widgets/new_transaction.dart';
@@ -10,6 +9,8 @@ import './widgets/chart.dart';
 import './models/transaction.dart';
 
 void main() {
+  //This is if you want that you app only play in portrait
+
   //This is necessary because if its not in some devices wont work
   // WidgetsFlutterBinding.ensureInitialized();
   // //SystemChrome allow you to set some application wide settings for your app
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Personal Expenses',
+      title: 'Personal Expens',
       theme: ThemeData(
           primarySwatch: Colors.purple,
           accentColor: Colors.amber,
@@ -103,7 +104,6 @@ class _MyHomePage extends State<MyHomePage> {
       //This method add a new transaction but no change the address or the pointer
       _userTransactions.add(newTx);
     });
-    print(_userTransactions);
   }
 
   void _startAddNewTransaction(BuildContext ctx) {

@@ -10,10 +10,11 @@ class CategoryItem extends StatelessWidget {
 
   void selectCategory(BuildContext ctx) {
     //Navication on mobile apps is like a stack, a list of pages, push and pop
-    Navigator.of(ctx).pushNamed('/category-meals', arguments: {
+    Navigator.of(ctx).pushNamed(CategoryMealsScreen.routeName, arguments: {
       'id': id,
       'title': title,
     });
+
   }
 
   @override

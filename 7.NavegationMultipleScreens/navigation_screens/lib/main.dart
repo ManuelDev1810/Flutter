@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import './screens/filters_screen.dart';
 import './screens/tabs_screen.dart';
 import './screens/meal_detail_screen.dart';
 import './screens/categories_screen.dart';
@@ -37,6 +38,7 @@ class MyApp extends StatelessWidget {
         '/': (_) => TabsScreen(),
         CategoryMealsScreen.routeName: (_) => CategoryMealsScreen(),
         MealDetailScreen.routeName: (_) => MealDetailScreen(),
+        FiltersScreen.routeName: (_) => FiltersScreen(),
       },
       //This method is to redirect to a widget when the route is not registered in routes valiable
       onGenerateRoute: (settings) {

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:navigation_screens/dummy_data.dart';
-import './category_meals_screen.dart';
 
 class MealDetailScreen extends StatelessWidget {
   static const routeName = '/mail-detail';

@@ -54,14 +54,16 @@ class MainDrawer extends StatelessWidget {
             'Meals',
             Icons.restaurant,
             () {
-              Navigator.of(context).pushNamed('/');
+              //Clearing the stack, REPLACING THE EXISTING PAGE
+              //This means this page wont have a back botton
+              Navigator.of(context).pushReplacementNamed('/');
             }
           ),
           buildListTile(
             'Settings',
             Icons.settings,
             () {
-              Navigator.of(context).pushNamed(FiltersScreen.routeName);
+              Navigator.of(context).pushReplacementNamed(FiltersScreen.routeName);
             }
           ),
         ],

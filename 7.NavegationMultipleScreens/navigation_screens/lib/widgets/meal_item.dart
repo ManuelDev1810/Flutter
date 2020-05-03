@@ -9,6 +9,7 @@ class MealItem extends StatelessWidget {
   final int duration;
   final Complexity complexity;
   final Affordability affordability;
+  final Function removeItem;
 
   MealItem({
     @required this.id,
@@ -17,10 +18,11 @@ class MealItem extends StatelessWidget {
     @required this.duration,
     @required this.complexity,
     @required this.affordability,
+    @required this.removeItem,
   });
 
   String get complexityText {
-    switch(complexity) {
+    switch (complexity) {
       case Complexity.Simple:
         return 'Simple';
         break;
@@ -36,7 +38,7 @@ class MealItem extends StatelessWidget {
   }
 
   String get affordabilityText {
-    switch(affordability) {
+    switch (affordability) {
       case Affordability.Affordable:
         return 'Affordable';
         break;
@@ -52,7 +54,14 @@ class MealItem extends StatelessWidget {
   }
 
   void selecMeal(ctx) {
-    Navigator.of(ctx).pushNamed(MealDetailScreen.routeName, arguments: id);
+    Navigator.of(ctx).pushNamed(
+      MealDetailScreen.routeName,
+      arguments: id,
+    ).then((result) { //When the page is pop
+      if(result != null){
+        removeItem(result);
+      }
+    });
   }
 
   @override
@@ -133,10 +142,11 @@ class MealItem extends StatelessWidget {
                       SizedBox(
                         width: 6,
                       ),
-                      Text(complexityText) //For one only property you dont need {},
+                      Text(
+                          complexityText) //For one only property you dont need {},
                     ],
                   ),
-                   Row(
+                  Row(
                     children: <Widget>[
                       Icon(
                         Icons.attach_money,
@@ -144,7 +154,8 @@ class MealItem extends StatelessWidget {
                       SizedBox(
                         width: 6,
                       ),
-                      Text(affordabilityText) //For one only property you dont need {},
+                      Text(
+                          affordabilityText) //For one only property you dont need {},
                     ],
                   ),
                 ],

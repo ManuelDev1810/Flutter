@@ -4,6 +4,11 @@ import 'package:navigation_screens/dummy_data.dart';
 class MealDetailScreen extends StatelessWidget {
   static const routeName = '/mail-detail';
 
+  final Function toggleFavorite;
+  final Function isFavorite;
+
+  MealDetailScreen(this.toggleFavorite, this.isFavorite);
+
   Widget buildSectionTitle(BuildContext ctx, String text) {
     return Container(
       margin: EdgeInsets.symmetric(
@@ -86,13 +91,9 @@ class MealDetailScreen extends StatelessWidget {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
-          Icons.delete,
+          isFavorite(mealId) ? Icons.star : Icons.star_border 
         ),
-        onPressed: () {
-          //This delete the existing page of the stack, so go back
-          //You can receive this id in the page this page is coming from, FUTURE
-          Navigator.of(context).pop(mealId);
-        },
+        onPressed: () => toggleFavorite(mealId),
       ),
     );
   }

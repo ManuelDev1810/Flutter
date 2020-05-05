@@ -1,8 +1,12 @@
 import 'package:flutter/material.dart';
 import '../models/product.dart';
 
-//Mix In: Is like extending a class, the difference is that you merge some properties or methods..
-//...without extendins
+//Mix In: It's like a class with a bunch or things or UTILITIES that you may need and use without exteding
+//The different besides that you can use mixin with a lot of classes, you can exten only one..
+//..is that you extends for example a Person extends from Mammal, that's logic
+//But a person wont extend from a bunch or things that can be used from a lot of objects like animals..
+//..or  stores etc.. So if you have things that can be used for a lot of things, use create a mixin
+//..Cause that mixin will be then use for a lot of things, Like the ChangeNotifiwe : )
 
 //ChangeNotifier is like inherited widget and this is allow us to make communication tunnels...
 //..with the help of the context we're getting in every widget
@@ -50,6 +54,10 @@ class Products with ChangeNotifier {
     //It is better that when you data changes you call notifiListener() from this class, which is..
     //THE PROVIDER
     return [..._items];
+  }
+
+  Product findById(String id){
+    return _items.firstWhere((product) => product.id == id);
   }
 
   //It is better that when you data changes you call notifiListener() from this class the provider

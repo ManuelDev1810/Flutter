@@ -18,9 +18,14 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     //Regesring this class with a provider so the child widgets that are LISTEBER will be rebuild..
     //..when the data changes
+
+    //Here is the better approach for not using value, WHY? Because you will use that instance..
+    //..for al the project, this is for efficenty, whenever you reuse an existing object use value
+
+    //If you replace the page using provider, dont wonrry ChangeNotifierProvider cleans it up for you
     return ChangeNotifierProvider(
       //Returning the Provider, all the listener will have only this instance.
-      create: (ctx) => Products(),
+      create: (_) => Products(),
       child: MaterialApp(
         title: 'MyShop',
         theme: ThemeData(

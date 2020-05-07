@@ -49,7 +49,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
         ],
       ),
       //I am taking the grid away cause i dont wanna rebuild the appBar of this widget
-      //Im now using _showOnlyFavorities with the provider cause it will change the list everywhere
+      //Im not using _showOnlyFavorities with the provider cause it will change the list everywhere
       //I am using locally so i transform this widget to statefull
       body: ProductsGrid(_showOnlyFavorities),
     );

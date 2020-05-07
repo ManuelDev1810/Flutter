@@ -4,12 +4,8 @@ import '../screens/product_detail_screen.dart';
 import '../providers/product.dart';
 
 class ProductItem extends StatelessWidget {
-  // final String id;
-  // final String title;
-  // final String imageUrl;
 
-  // ProductItem(this.id, this.title, this.imageUrl);
-
+  //DONT USE PROVIDERS ON LOCAL STATE WIDGETS(STATE THAT ONLY WORK IN A WIDGET, LIKE SWITCHIN A BUTTON)
   @override
   Widget build(BuildContext context) {
     //How we create once product_provider for one product_item that's what we get, THIS IS NESTERPROVIDERS

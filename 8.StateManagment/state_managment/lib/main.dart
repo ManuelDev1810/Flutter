@@ -5,6 +5,9 @@ import './screens/product_detail_screen.dart';
 import './screens/products_overview_screen.dart';
 import './providers/products.dart';
 
+//DONT USE PROVIDERS ON LOCAL STATE WIDGETS(STATE THAT ONLY WORK IN A WIDGET, LIKE SWITCHIN A BUTTON)
+//DONT USE IT BECAUSE YOU KNOW WHEN YOU ISE IT WILL BE GLOBALLY INSTEAD USE STATEFULL WIDGETS
+
 //I need to provide a class which you then wanna use from different widgets at the height..
 //..possible point of all these widgets which will be interested
 //This means that if ProductsOverviewScreen and ProductDefailScreen wants the data..

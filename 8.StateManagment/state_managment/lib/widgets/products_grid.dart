@@ -4,6 +4,11 @@ import '../providers/products.dart';
 import './product_item.dart';
 
 class ProductsGrid extends StatelessWidget {
+
+  final bool showFavs;
+
+  ProductsGrid(this.showFavs);
+
   @override
   Widget build(BuildContext context) {
     //Registering this widget as a listener of the Products provider, and now this method goes ahead and go..
@@ -11,7 +16,7 @@ class ProductsGrid extends StatelessWidget {
     //..then goes ahead and go to the parent of the ProductsOverviewScreen, fins the Main class..
     //..with the Product Provider
     final productsData = Provider.of<Products>(context);
-    final products = productsData.items;
+    final products = showFavs ? productsData.favoriteItems : productsData.items;
 
     return GridView.builder(
       padding: EdgeInsets.all(15),
@@ -36,10 +41,10 @@ class ProductsGrid extends StatelessWidget {
         value: products[index], //Returning a provider for each Product
         //The good thing about this is that only that particular product will rebuild
         child: ProductItem(
-          // products[index].id,
-          // products[index].title,
-          // products[index].imageUrl,
-        ),
+            // products[index].id,
+            // products[index].title,
+            // products[index].imageUrl,
+            ),
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, //2 colums always

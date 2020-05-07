@@ -46,6 +46,8 @@ class Products with ChangeNotifier {
     ),
   ];
 
+  var showFavoritiesOnly = false;
+
   List<Product> get items {
     //returning a copy of the list with the spread operator
     //I do this cause i dont wanna return a pointer at my object on memory
@@ -53,11 +55,30 @@ class Products with ChangeNotifier {
     //notifyLister(), the data will rebuild incorrectly
     //It is better that when you data changes you call notifiListener() from this class, which is..
     //THE PROVIDER
+    if (showFavoritiesOnly) {
+      return [..._items.where((prodItem) => prodItem.isFavorite).toList()];
+    }
     return [..._items];
   }
 
-  Product findById(String id){
+  List<Product> get favoriteItems {
+    return _items.where((prodItem) => prodItem.isFavorite).toList();
+  }
+
+  Product findById(String id) {
     return _items.firstWhere((product) => product.id == id);
+  }
+
+  //NOT GLOBALLY BUT LOCAL
+  void showFavoritesOnly() {
+    showFavoritiesOnly = true;
+    notifyListeners();
+  }
+
+  //NOT GLOBALLY BUT LOCAL
+  void showAll() {
+    showFavoritiesOnly = false;
+    notifyListeners();
   }
 
   //It is better that when you data changes you call notifiListener() from this class the provider

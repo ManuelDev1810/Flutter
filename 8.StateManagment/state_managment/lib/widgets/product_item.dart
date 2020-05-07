@@ -13,7 +13,12 @@ class ProductItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //How we create once product_provider for one product_item that's what we get, THIS IS NESTERPROVIDERS
-    final product = Provider.of<Product>(context);
+    final product = Provider.of<Product>(context, listen: false);
+    print('product rebuild');
+
+    //Another way for listener is use Consume instead of provider..
+    //This is useful when you only want to rebuild a part of your code, because with Provider..
+    //..you rebuild everything, so you can put provder to listen false and use customer when you need changes
 
     //We cant put GridTile with border radius, so we use ClipRRect to transform the look of this widget
     return ClipRRect(
@@ -34,14 +39,22 @@ class ProductItem extends StatelessWidget {
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
-          leading: IconButton(
-            icon: Icon(
-              product.isFavorite ? Icons.favorite : Icons.favorite_border,
+          //Only this part well rebuild cause we have provider.listerner false and we are using consumer here
+          //Consumer always has listener:true and so we rebuld the iconbutton whenever icon change
+          //So we shirnk the re build
+
+          //Another way of accomplish this is to separe this iconbutton in a separate widget
+          leading: Consumer<Product>(
+            builder: (ctx, product, child) => IconButton(
+              icon: Icon(
+                product.isFavorite ? Icons.favorite : Icons.favorite_border,
+              ),
+              onPressed: () {
+                product.toggleFavoriteStatus();
+              },
+              color: Theme.of(context).accentColor,
             ),
-            onPressed: () {
-              product.toggleFavoriteStatus();
-            },
-            color: Theme.of(context).accentColor,
+            // child: Text('Never rebuild, you can use like label:child in the builder, but this never changes'),
           ),
           title: Text(
             product.title,

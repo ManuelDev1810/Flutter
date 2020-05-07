@@ -27,7 +27,8 @@ class _TabsScreen extends State<TabsScreen> {
 
   @override
   void initState() {
-    //We put it here cause we wanna use widget, widget only can be use on build, initState etc
+    //We put it here cause we wanna use widget, widget only can be use on build, initState etc..
+    //.. it is more likely it is not initialized yet
     _pages = [
     {
       'page': CategoriesScreen(),

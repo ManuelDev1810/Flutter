@@ -18,10 +18,18 @@ class ProductsGrid extends StatelessWidget {
       itemCount: products.length,
       //In the ProductItem Im fine passing data thorfgt the constructor because this is data that..
       //..the ProductItem needs, not data that it will go up again like a reference method etc
-      itemBuilder: (ctc, index) => ProductItem(
-        products[index].id,
-        products[index].title,
-        products[index].imageUrl,
+      itemBuilder: (ctc, index) => ChangeNotifierProvider(
+        create: (_) => products[index], //Returning a provider for each Product
+        //The good thing about this is that only that particular product will rebuild
+        
+        //This NESTLE PROVIDER will become a problem because on this cases when we use..
+        //..builder(means that show only the neccesary), what flutter does is that reuses the widget..
+        //..and only change the data, so we will a get a provider with a different product
+        child: ProductItem(
+          // products[index].id,
+          // products[index].title,
+          // products[index].imageUrl,
+        ),
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, //2 colums always

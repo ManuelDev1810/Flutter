@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/product.dart';
+import './product.dart';
 
 //Mix In: It's like a class with a bunch or things or UTILITIES that you may need and use without exteding
 //The different besides that you can use mixin with a lot of classes, you can exten only one..

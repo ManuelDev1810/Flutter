@@ -40,11 +40,7 @@ class ProductsGrid extends StatelessWidget {
       itemBuilder: (ctc, index) => ChangeNotifierProvider.value(
         value: products[index], //Returning a provider for each Product
         //The good thing about this is that only that particular product will rebuild
-        child: ProductItem(
-            // products[index].id,
-            // products[index].title,
-            // products[index].imageUrl,
-            ),
+        child: ProductItem(),
       ),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2, //2 colums always

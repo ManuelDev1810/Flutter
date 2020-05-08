@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import './screens/product_detail_screen.dart';
 import './screens/products_overview_screen.dart';
 import './providers/products.dart';
+import './providers/card.dart' as Card;
 
 //DONT USE PROVIDERS ON LOCAL STATE WIDGETS(STATE THAT ONLY WORK IN A WIDGET, LIKE SWITCHIN A BUTTON)
 //DONT USE IT BECAUSE YOU KNOW WHEN YOU ISE IT WILL BE GLOBALLY INSTEAD USE STATEFULL WIDGETS
@@ -26,9 +27,18 @@ class MyApp extends StatelessWidget {
     //..for al the project, this is for efficenty, whenever you reuse an existing object use value
 
     //If you replace the page using provider, dont wonrry ChangeNotifierProvider cleans it up for you
-    return ChangeNotifierProvider(
-      //Returning the Provider, all the listener will have only this instance.
-      create: (_) => Products(),
+
+    return MultiProvider(
+
+      //Can listen by both providers everywhere
+      providers: [
+        ChangeNotifierProvider(
+          create: (_) => Products(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => Card.Card(),
+        ),
+      ],
       child: MaterialApp(
         title: 'MyShop',
         theme: ThemeData(

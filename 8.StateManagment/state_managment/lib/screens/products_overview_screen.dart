@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../widgets/products_grid.dart';
+import '../widgets/badge.dart';
+import '../providers/card.dart' as Card;
 
 enum FilterOptions {
   Favorities,
@@ -45,6 +48,19 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
                 value: FilterOptions.All,
               ),
             ],
+          ),
+          Consumer<Card.Card>(
+            builder: (_, card, ch) => Badge(
+              child: ch,
+              value: card.itemCount.toString(),
+            ),
+            //This dont need to be rebuild
+            child: IconButton(
+              icon: Icon(
+                Icons.shopping_cart,
+              ),
+              onPressed: () {},
+            ),
           ),
         ],
       ),

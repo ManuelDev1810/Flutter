@@ -2,10 +2,14 @@ import 'package:flutter/foundation.dart';
 import '../widgets/card_item.dart';
 
 class Card with ChangeNotifier {
-  Map<String, CardItem> _items;
+  Map<String, CardItem> _items = {};
 
   Map<String, CardItem> get items {
     return {..._items};
+  }
+
+  int get itemCount {
+    return _items.length;
   }
 
   void addItem(String productId, double price, String title) {
@@ -29,5 +33,6 @@ class Card with ChangeNotifier {
         ),
       );
     }
+    notifyListeners();
   }
 }

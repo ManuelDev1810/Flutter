@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../screens/product_detail_screen.dart';
 import '../providers/product.dart';
+import '../providers/card.dart' as Card;
 
 class ProductItem extends StatelessWidget {
 
@@ -11,6 +12,8 @@ class ProductItem extends StatelessWidget {
     //How we create once product_provider for one product_item that's what we get, THIS IS NESTERPROVIDERS
     final product = Provider.of<Product>(context, listen: false);
     print('product rebuild');
+    //Now this listener go up till find the provider in the main class
+    final card = Provider.of<Card.Card>(context, listen: false);
 
     //Another way for listener is use Consume instead of provider..
     //This is useful when you only want to rebuild a part of your code, because with Provider..
@@ -60,7 +63,9 @@ class ProductItem extends StatelessWidget {
             icon: Icon(
               Icons.shopping_cart,
             ),
-            onPressed: () {},
+            onPressed: () {
+              card.addItem(product.id, product.price, product.title,);
+            },
             color: Theme.of(context).accentColor,
           ),
         ),

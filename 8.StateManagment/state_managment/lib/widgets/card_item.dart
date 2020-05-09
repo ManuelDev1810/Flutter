@@ -1,15 +1,38 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
-class CardItem {
-  final String id; //this will be the id of the product not of the card item
-  final String title;
-  final int quantity;
+class CardItem extends StatelessWidget {
+  final String id;
   final double price;
+  final int quantity;
+  final String title;
 
-  CardItem({
-    @required this.id,
-    @required this.title,
-    @required this.quantity,
-    @required this.price,
-  });
+  CardItem(this.id, this.price, this.quantity, this.title);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.symmetric(
+        horizontal: 15,
+        vertical: 4,
+      ),
+      child: Padding(
+        padding: EdgeInsets.all(8),
+        child: ListTile(
+          leading: CircleAvatar(
+            child: Padding(
+              padding: EdgeInsets.all(5),
+              child: FittedBox(
+                child: Text(
+                  '\$$price',
+                ),
+              ),
+            ),
+          ),
+          title: Text(title),
+          subtitle: Text('Total: \$${(quantity * price)}'),
+          trailing: Text('$quantity x'),
+        ),
+      ),
+    );
+  }
 }

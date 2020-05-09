@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import './screens/product_detail_screen.dart';
 import './screens/products_overview_screen.dart';
+import './screens/card_screen.dart';
 import './providers/products.dart';
 import './providers/card.dart' as Card;
 
@@ -29,7 +30,6 @@ class MyApp extends StatelessWidget {
     //If you replace the page using provider, dont wonrry ChangeNotifierProvider cleans it up for you
 
     return MultiProvider(
-
       //Can listen by both providers everywhere
       providers: [
         ChangeNotifierProvider(
@@ -47,7 +47,10 @@ class MyApp extends StatelessWidget {
           fontFamily: 'Lato',
         ),
         home: ProductsOverviewScreen(),
-        routes: {ProductDefailScreen.routeName: (_) => ProductDefailScreen()},
+        routes: {
+          ProductDefailScreen.routeName: (_) => ProductDefailScreen(),
+          CardScreen.routeName: (_) => CardScreen(),
+        },
       ),
     );
   }

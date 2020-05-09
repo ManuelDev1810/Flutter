@@ -1,6 +1,21 @@
 import 'package:flutter/foundation.dart';
 import '../widgets/card_item.dart';
 
+class CardItem {
+  final String id; //this will be the id of the product not of the card item
+  final String title;
+  final int quantity;
+  final double price;
+
+  CardItem({
+    @required this.id,
+    @required this.title,
+    @required this.quantity,
+    @required this.price,
+  });
+}
+
+
 class Card with ChangeNotifier {
   Map<String, CardItem> _items = {};
 
@@ -10,6 +25,14 @@ class Card with ChangeNotifier {
 
   int get itemCount {
     return _items.length;
+  }
+
+  double get totalAmount {
+    var total = 0.0;
+    _items.forEach((keu, cardItem) {
+      total += (cardItem.price * cardItem.price);
+    });
+    return total;
   }
 
   void addItem(String productId, double price, String title) {

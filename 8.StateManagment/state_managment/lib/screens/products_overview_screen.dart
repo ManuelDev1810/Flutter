@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 import '../providers/card.dart' as Card;
+import '../screens/card_screen.dart';
 
 enum FilterOptions {
   Favorities,
@@ -49,6 +50,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               ),
             ],
           ),
+          //It goes up and find the provider in the main class
           Consumer<Card.Card>(
             builder: (_, card, ch) => Badge(
               child: ch,
@@ -59,7 +61,9 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
               icon: Icon(
                 Icons.shopping_cart,
               ),
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pushNamed(CardScreen.routeName);
+              },
             ),
           ),
         ],

@@ -55,6 +55,7 @@ class CardScreen extends StatelessWidget {
               itemCount: card.itemCount,
               itemBuilder: (_, index) => CardItem(
                 card.items.values.toList()[index].id,
+                card.items.keys.toList()[index],
                 card.items.values.toList()[index].price,
                 card.items.values.toList()[index].quantity,
                 card.items.values.toList()[index].title,

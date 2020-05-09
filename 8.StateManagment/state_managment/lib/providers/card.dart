@@ -1,5 +1,4 @@
 import 'package:flutter/foundation.dart';
-import '../widgets/card_item.dart';
 
 class CardItem {
   final String id; //this will be the id of the product not of the card item
@@ -29,8 +28,8 @@ class Card with ChangeNotifier {
 
   double get totalAmount {
     var total = 0.0;
-    _items.forEach((keu, cardItem) {
-      total += (cardItem.price * cardItem.price);
+    _items.forEach((key, cardItem) {
+      total += (cardItem.price * cardItem.quantity);
     });
     return total;
   }
@@ -56,6 +55,11 @@ class Card with ChangeNotifier {
         ),
       );
     }
+    notifyListeners();
+  }
+
+  void removeItem(String productId){
+    _items.remove(productId);
     notifyListeners();
   }
 }

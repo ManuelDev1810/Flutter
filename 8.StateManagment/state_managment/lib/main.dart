@@ -5,7 +5,7 @@ import './screens/products_overview_screen.dart';
 import './screens/cart_screen.dart';
 import './providers/orders.dart';
 import './providers/products.dart';
-import './providers/cart.dart' as Card;
+import './providers/cart.dart' as Cart;
 
 //DONT USE PROVIDERS ON LOCAL STATE WIDGETS(STATE THAT ONLY WORK IN A WIDGET, LIKE SWITCHIN A BUTTON)
 //DONT USE IT BECAUSE YOU KNOW WHEN YOU ISE IT WILL BE GLOBALLY INSTEAD USE STATEFULL WIDGETS
@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           create: (_) => Products(),
         ),
         ChangeNotifierProvider(
-          create: (_) => Card.Card(),
+          create: (_) => Cart.Cart(),
         ),
         ChangeNotifierProvider(
           create: (_) => Orders(),

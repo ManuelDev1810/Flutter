@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/card.dart'  as CardProvider show Card;
+import '../providers/cart.dart'  as CardProvider show Card;
 
 class CardItem extends StatelessWidget {
   final String id;

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../screens/product_detail_screen.dart';
 import '../providers/product.dart';
-import '../providers/card.dart' as Card;
+import '../providers/cart.dart' as Card;
 
 class ProductItem extends StatelessWidget {
 
@@ -38,7 +38,7 @@ class ProductItem extends StatelessWidget {
         ),
         footer: GridTileBar(
           backgroundColor: Colors.black87,
-          //Only this part well rebuild cause we have provider.listerner false and we are using consumer here
+          //Only this part will rebuild cause we have provider.listerner false and we are using consumer here
           //Consumer always has listener:true and so we rebuld the iconbutton whenever icon change
           //So we shirnk the re build
 

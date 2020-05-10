@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import './screens/product_detail_screen.dart';
 import './screens/products_overview_screen.dart';
-import './screens/card_screen.dart';
+import './screens/cart_screen.dart';
+import './providers/orders.dart';
 import './providers/products.dart';
-import './providers/card.dart' as Card;
+import './providers/cart.dart' as Card;
 
 //DONT USE PROVIDERS ON LOCAL STATE WIDGETS(STATE THAT ONLY WORK IN A WIDGET, LIKE SWITCHIN A BUTTON)
 //DONT USE IT BECAUSE YOU KNOW WHEN YOU ISE IT WILL BE GLOBALLY INSTEAD USE STATEFULL WIDGETS
@@ -37,6 +37,9 @@ class MyApp extends StatelessWidget {
         ),
         ChangeNotifierProvider(
           create: (_) => Card.Card(),
+        ),
+        ChangeNotifierProvider(
+          create: (_) => Orders(),
         ),
       ],
       child: MaterialApp(

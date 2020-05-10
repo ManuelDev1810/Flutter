@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../widgets/app_drarwer.dart';
 import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 import '../providers/cart.dart' as Cart;
@@ -68,6 +69,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           ),
         ],
       ),
+      drawer: AppDrawer(),
       //I am taking the grid away cause i dont wanna rebuild the appBar of this widget
       //Im not using _showOnlyFavorities with the provider cause it will change the list everywhere
       //I am using locally so i transform this widget to statefull

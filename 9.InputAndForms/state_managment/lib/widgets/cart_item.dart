@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../providers/cart.dart'  as CartProvider show Cart;
+import '../providers/cart.dart' as CartProvider show Cart;
 
 class CartItem extends StatelessWidget {
   final String id;
@@ -32,8 +32,34 @@ class CartItem extends StatelessWidget {
         ),
       ),
       direction: DismissDirection.endToStart,
+      confirmDismiss: (direction) {
+        //For Diaglog we dont have to use Scaffold, cause Dialog is not attached to the page..
+        //..it can be shows anywhere... it returns a Future
+        return showDialog<bool>(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text('Are you sure?'),
+                  content:
+                      Text('Do you want to remove the item from the cart?'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('No'),
+                      onPressed: () {
+                        Navigator.of(ctx).pop(false);//Read the showDialog
+                      },
+                    ),
+                    FlatButton(
+                      child: Text('Yes'),
+                      onPressed: () {
+                        Navigator.of(ctx).pop(true);//Read the showDialog
+                      },
+                    ),
+                  ],
+                ));
+      },
       onDismissed: (direction) {
-        Provider.of<CartProvider.Cart>(context, listen: false).removeItem(productId);
+        Provider.of<CartProvider.Cart>(context, listen: false)
+            .removeItem(productId);
       },
       child: Card(
         margin: EdgeInsets.symmetric(

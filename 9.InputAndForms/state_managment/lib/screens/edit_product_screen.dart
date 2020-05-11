@@ -10,13 +10,31 @@ class _EditProductScreen extends State<EditProductScreen> {
   //FocusNode save the focusNode of an input
   final _priceFocusNode = FocusNode();
   final _descriptionFocusNode = FocusNode();
+  final _imageUrlController = TextEditingController();
+  final _imageUrlFocusNode = FocusNode();
+
+  @override
+  void initState() {
+    _imageUrlFocusNode.addListener(_updateImageUrl);
+    super.initState();
+  }
 
   @override
   void dispose() {
     //We have to clear the focus node when leaving this screen they dont clean up automacally
     _priceFocusNode.dispose();
     _descriptionFocusNode.dispose();
+    _imageUrlController.dispose();
+    _imageUrlFocusNode.dispose();
+    _imageUrlFocusNode.removeListener(_updateImageUrl);
     super.dispose();
+  }
+
+  void _updateImageUrl() {
+    print('hhh');
+    if(!_imageUrlFocusNode.hasFocus){
+      setState(() {});
+    }
   }
 
   @override
@@ -55,7 +73,44 @@ class _EditProductScreen extends State<EditProductScreen> {
                 //..an enter symbol to go to a new line
                 keyboardType: TextInputType.multiline,
                 focusNode: _descriptionFocusNode,
-              )
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: <Widget>[
+                  Container(
+                    width: 100,
+                    height: 100,
+                    margin: EdgeInsets.only(
+                      top: 8,
+                      right: 10,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 1,
+                        color: Colors.grey,
+                      ),
+                    ),
+                    child: _imageUrlController.text.isEmpty
+                        ? Text('Enter a URL')
+                        : FittedBox(
+                            child: Image.network(
+                              _imageUrlController.text,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                  ),
+                  Expanded(
+                    //Since this TextFormField is in a row, it will take all the width, so we need a expanded
+                    child: TextFormField(
+                      decoration: InputDecoration(labelText: 'Image Url'),
+                      keyboardType: TextInputType.url,
+                      textInputAction: TextInputAction.done,
+                      controller: _imageUrlController,
+                      focusNode: _imageUrlFocusNode,
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

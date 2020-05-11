@@ -9,6 +9,16 @@ class EditProductScreen extends StatefulWidget {
 class _EditProductScreen extends State<EditProductScreen> {
   //FocusNode save the focusNode of an input
   final _priceFocusNode = FocusNode();
+  final _descriptionFocusNode = FocusNode();
+
+  @override
+  void dispose() {
+    //We have to clear the focus node when leaving this screen they dont clean up automacally
+    _priceFocusNode.dispose();
+    _descriptionFocusNode.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,12 +39,23 @@ class _EditProductScreen extends State<EditProductScreen> {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
                 },
               ),
-                TextFormField(
+              TextFormField(
                 decoration: InputDecoration(labelText: 'Price'),
                 textInputAction: TextInputAction.next,
                 keyboardType: TextInputType.number,
                 focusNode: _priceFocusNode,
+                onFieldSubmitted: (_) {
+                  FocusScope.of(context).requestFocus(_descriptionFocusNode);
+                },
               ),
+              TextFormField(
+                decoration: InputDecoration(labelText: 'Description'),
+                maxLines: 3,
+                //We dont need the textInputAction cause the multiline will automatically give us..
+                //..an enter symbol to go to a new line
+                keyboardType: TextInputType.multiline,
+                focusNode: _descriptionFocusNode,
+              )
             ],
           ),
         ),

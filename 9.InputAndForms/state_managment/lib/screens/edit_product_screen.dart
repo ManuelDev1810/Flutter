@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../providers/product.dart';
 
 class EditProductScreen extends StatefulWidget {
   static const routeName = '/edit-product';
@@ -12,6 +13,16 @@ class _EditProductScreen extends State<EditProductScreen> {
   final _descriptionFocusNode = FocusNode();
   final _imageUrlController = TextEditingController();
   final _imageUrlFocusNode = FocusNode();
+  //This will allow us to interact with the state behind the form widget
+  final _form = GlobalKey<FormState>();
+
+  var _editProduct = Product(
+    id: null,
+    title: '',
+    price: 0,
+    description: '',
+    imageUrl: '',
+  );
 
   @override
   void initState() {
@@ -32,9 +43,19 @@ class _EditProductScreen extends State<EditProductScreen> {
 
   void _updateImageUrl() {
     print('hhh');
-    if(!_imageUrlFocusNode.hasFocus){
+    if (!_imageUrlFocusNode.hasFocus) {
       setState(() {});
     }
+  }
+
+  void _saveForm() {
+    //Save is a method provider by state object of the form widget which will save that form
+    //Now this method method will tigger the onSaved method on every textinput which will give the value entered
+    _form.currentState.save();
+    print(_editProduct.title);
+    print(_editProduct.description);
+    print(_editProduct.price);
+    print(_editProduct.imageUrl);
   }
 
   @override
@@ -42,10 +63,17 @@ class _EditProductScreen extends State<EditProductScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Product'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.save),
+            onPressed: _saveForm,
+          )
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.all(16),
         child: Form(
+          key: _form,
           child: ListView(
             children: <Widget>[
               TextFormField(
@@ -56,24 +84,49 @@ class _EditProductScreen extends State<EditProductScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
                 },
-              ),
-              TextFormField(
-                decoration: InputDecoration(labelText: 'Price'),
-                textInputAction: TextInputAction.next,
-                keyboardType: TextInputType.number,
-                focusNode: _priceFocusNode,
-                onFieldSubmitted: (_) {
-                  FocusScope.of(context).requestFocus(_descriptionFocusNode);
+                onSaved: (value) {
+                  _editProduct = Product(
+                    title: value,
+                    price: _editProduct.price,
+                    description: _editProduct.description,
+                    imageUrl: _editProduct.imageUrl,
+                    id: null,
+                  );
                 },
               ),
               TextFormField(
-                decoration: InputDecoration(labelText: 'Description'),
-                maxLines: 3,
-                //We dont need the textInputAction cause the multiline will automatically give us..
-                //..an enter symbol to go to a new line
-                keyboardType: TextInputType.multiline,
-                focusNode: _descriptionFocusNode,
-              ),
+                  decoration: InputDecoration(labelText: 'Price'),
+                  textInputAction: TextInputAction.next,
+                  keyboardType: TextInputType.number,
+                  focusNode: _priceFocusNode,
+                  onFieldSubmitted: (_) {
+                    FocusScope.of(context).requestFocus(_descriptionFocusNode);
+                  },
+                  onSaved: (value) {
+                    _editProduct = Product(
+                      title: _editProduct.title,
+                      price: double.parse(value),
+                      description: _editProduct.description,
+                      imageUrl: _editProduct.imageUrl,
+                      id: null,
+                    );
+                  }),
+              TextFormField(
+                  decoration: InputDecoration(labelText: 'Description'),
+                  maxLines: 3,
+                  //We dont need the textInputAction cause the multiline will automatically give us..
+                  //..an enter symbol to go to a new line
+                  keyboardType: TextInputType.multiline,
+                  focusNode: _descriptionFocusNode,
+                  onSaved: (value) {
+                    _editProduct = Product(
+                      title: _editProduct.title,
+                      price: _editProduct.price,
+                      description: value,
+                      imageUrl: _editProduct.imageUrl,
+                      id: null,
+                    );
+                  }),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: <Widget>[
@@ -102,12 +155,21 @@ class _EditProductScreen extends State<EditProductScreen> {
                   Expanded(
                     //Since this TextFormField is in a row, it will take all the width, so we need a expanded
                     child: TextFormField(
-                      decoration: InputDecoration(labelText: 'Image Url'),
-                      keyboardType: TextInputType.url,
-                      textInputAction: TextInputAction.done,
-                      controller: _imageUrlController,
-                      focusNode: _imageUrlFocusNode,
-                    ),
+                        decoration: InputDecoration(labelText: 'Image Url'),
+                        keyboardType: TextInputType.url,
+                        textInputAction: TextInputAction.done,
+                        controller: _imageUrlController,
+                        focusNode: _imageUrlFocusNode,
+                        onFieldSubmitted: (_) => _saveForm(),
+                        onSaved: (value) {
+                          _editProduct = Product(
+                            title: _editProduct.title,
+                            price: _editProduct.price,
+                            description: _editProduct.description,
+                            imageUrl: value,
+                            id: null,
+                          );
+                        }),
                   ),
                 ],
               ),

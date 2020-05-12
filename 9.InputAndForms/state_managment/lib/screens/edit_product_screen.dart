@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import '../providers/products.dart';
 import '../providers/product.dart';
 
 class EditProductScreen extends StatefulWidget {
@@ -49,18 +51,17 @@ class _EditProductScreen extends State<EditProductScreen> {
 
   void _saveForm() {
     //Calling all the validate methods: validator(){}
-    if(!_form.currentState.validate()) return;
+    if (!_form.currentState.validate()) return;
     //Save is a method provider by state object of the form widget which will save that form
     //Now this method method will tigger the onSaved method on every textinput which will give the value entered
     _form.currentState.save();
-    print(_editProduct.title);
-    print(_editProduct.description);
-    print(_editProduct.price);
-    print(_editProduct.imageUrl);
+    Provider.of<Products>(context, listen: false).addProduct(_editProduct);
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    print('Si Si Sinuta');
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Product'),
@@ -85,8 +86,8 @@ class _EditProductScreen extends State<EditProductScreen> {
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
                 },
-                validator: (value){
-                  if(value.isEmpty){
+                validator: (value) {
+                  if (value.isEmpty) {
                     return 'Please provide a value';
                   }
                   return null;
@@ -109,6 +110,18 @@ class _EditProductScreen extends State<EditProductScreen> {
                   onFieldSubmitted: (_) {
                     FocusScope.of(context).requestFocus(_descriptionFocusNode);
                   },
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return 'Please enter a price.';
+                    }
+                    if (double.tryParse(value) == null) {
+                      return 'Please enter a valide number.';
+                    }
+                    if (double.parse(value) == 0) {
+                      return 'Please enter a number greater than zero.';
+                    }
+                    return null;
+                  },
                   onSaved: (value) {
                     _editProduct = Product(
                       title: _editProduct.title,
@@ -125,6 +138,12 @@ class _EditProductScreen extends State<EditProductScreen> {
                   //..an enter symbol to go to a new line
                   keyboardType: TextInputType.multiline,
                   focusNode: _descriptionFocusNode,
+                  validator: (value){
+                    if(value.isEmpty){
+                      return 'Please enter a description.';
+                    }
+                    return null;
+                  },
                   onSaved: (value) {
                     _editProduct = Product(
                       title: _editProduct.title,
@@ -168,6 +187,18 @@ class _EditProductScreen extends State<EditProductScreen> {
                         controller: _imageUrlController,
                         focusNode: _imageUrlFocusNode,
                         onFieldSubmitted: (_) => _saveForm(),
+                        validator: (value) {
+                          if(value.isEmpty){
+                            return 'Please enter an image URL';
+                          }
+                          if(!value.startsWith('http') && !value.startsWith('http')){
+                            return 'Please enter an image URL';
+                          }
+                          if(!value.endsWith('png') && !value.endsWith('jpg') && !value.endsWith('jpeg')){
+                            return 'Please enter a valid image URL';
+                          }
+                          return null;
+                        },
                         onSaved: (value) {
                           _editProduct = Product(
                             title: _editProduct.title,

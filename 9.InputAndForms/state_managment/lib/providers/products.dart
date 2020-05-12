@@ -82,9 +82,15 @@ class Products with ChangeNotifier {
   }
 
   //It is better that when you data changes you call notifiListener() from this class the provider
-  void addProduct() {
-    // _items.add('');
-    //This method is to notify all the listener of this provider
+  void addProduct(Product product) {
+    var newProduct = Product(
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      id: DateTime.now().toString(),
+    );
+    _items.add(newProduct);
     notifyListeners();
   }
 }

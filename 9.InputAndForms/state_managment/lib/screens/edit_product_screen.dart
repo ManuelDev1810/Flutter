@@ -42,13 +42,14 @@ class _EditProductScreen extends State<EditProductScreen> {
   }
 
   void _updateImageUrl() {
-    print('hhh');
     if (!_imageUrlFocusNode.hasFocus) {
       setState(() {});
     }
   }
 
   void _saveForm() {
+    //Calling all the validate methods: validator(){}
+    if(!_form.currentState.validate()) return;
     //Save is a method provider by state object of the form widget which will save that form
     //Now this method method will tigger the onSaved method on every textinput which will give the value entered
     _form.currentState.save();
@@ -83,6 +84,12 @@ class _EditProductScreen extends State<EditProductScreen> {
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (_) {
                   FocusScope.of(context).requestFocus(_priceFocusNode);
+                },
+                validator: (value){
+                  if(value.isEmpty){
+                    return 'Please provide a value';
+                  }
+                  return null;
                 },
                 onSaved: (value) {
                   _editProduct = Product(

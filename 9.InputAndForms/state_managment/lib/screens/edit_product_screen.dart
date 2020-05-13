@@ -44,7 +44,7 @@ class _EditProductScreen extends State<EditProductScreen> {
   //We know we cant use context in the initState, so we use it here
   @override
   void didChangeDependencies() {
-    if (_isInit) {
+    if (_isInit) {  //This method runs like 4 - 5 times
       final productId = ModalRoute.of(context).settings.arguments as String;
       if (productId != null) {
         _editedProduct =
@@ -97,7 +97,6 @@ class _EditProductScreen extends State<EditProductScreen> {
 
   @override
   Widget build(BuildContext context) {
-    print('Si Si Sinuta');
     return Scaffold(
       appBar: AppBar(
         title: Text('Edit Product'),

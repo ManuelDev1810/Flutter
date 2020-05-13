@@ -18,7 +18,7 @@ class _EditProductScreen extends State<EditProductScreen> {
   //This will allow us to interact with the state behind the form widget
   final _form = GlobalKey<FormState>();
 
-  var _editProduct = Product(
+  var _editedProduct = Product(
     id: null,
     title: '',
     price: 0,
@@ -26,10 +26,41 @@ class _EditProductScreen extends State<EditProductScreen> {
     imageUrl: '',
   );
 
+  var _isInit = true;
+
+  var _initValues = {
+    'title': '',
+    'description': '',
+    'price': '',
+    'imageUrl': '',
+  };
+
   @override
   void initState() {
     _imageUrlFocusNode.addListener(_updateImageUrl);
     super.initState();
+  }
+
+  //We know we cant use context in the initState, so we use it here
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      final productId = ModalRoute.of(context).settings.arguments as String;
+      if (productId != null) {
+        _editedProduct =
+            Provider.of<Products>(context, listen: false).findById(productId);
+        _initValues = {
+          'title': _editedProduct.title,
+          'description': _editedProduct.description,
+          'price': _editedProduct.price.toString(),
+          // 'imageUrl': _editedProduct.imageUrl,  We cant use  initialValue when using controller
+          'imageUrl': '',
+        };
+        _imageUrlController.text = _editedProduct.imageUrl;
+      }
+    }
+    _isInit = false;
+    super.didChangeDependencies();
   }
 
   @override
@@ -55,7 +86,12 @@ class _EditProductScreen extends State<EditProductScreen> {
     //Save is a method provider by state object of the form widget which will save that form
     //Now this method method will tigger the onSaved method on every textinput which will give the value entered
     _form.currentState.save();
-    Provider.of<Products>(context, listen: false).addProduct(_editProduct);
+    if (_editedProduct.id != null) {
+      Provider.of<Products>(context, listen: false)
+          .updateProduct(_editedProduct.id, _editedProduct);
+    } else {
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct);
+    }
     Navigator.of(context).pop();
   }
 
@@ -79,6 +115,7 @@ class _EditProductScreen extends State<EditProductScreen> {
           child: ListView(
             children: <Widget>[
               TextFormField(
+                initialValue: _initValues['title'],
                 decoration: InputDecoration(labelText: 'Title'),
                 //This controls what the bottom right button in the soft keyboard will show..
                 //..whether is a checkmark or a done text or next input
@@ -93,16 +130,18 @@ class _EditProductScreen extends State<EditProductScreen> {
                   return null;
                 },
                 onSaved: (value) {
-                  _editProduct = Product(
+                  _editedProduct = Product(
                     title: value,
-                    price: _editProduct.price,
-                    description: _editProduct.description,
-                    imageUrl: _editProduct.imageUrl,
-                    id: null,
+                    price: _editedProduct.price,
+                    description: _editedProduct.description,
+                    imageUrl: _editedProduct.imageUrl,
+                    id: _editedProduct.id,
+                    isFavorite: _editedProduct.isFavorite,
                   );
                 },
               ),
               TextFormField(
+                  initialValue: _initValues['price'],
                   decoration: InputDecoration(labelText: 'Price'),
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.number,
@@ -123,34 +162,37 @@ class _EditProductScreen extends State<EditProductScreen> {
                     return null;
                   },
                   onSaved: (value) {
-                    _editProduct = Product(
-                      title: _editProduct.title,
+                    _editedProduct = Product(
+                      title: _editedProduct.title,
                       price: double.parse(value),
-                      description: _editProduct.description,
-                      imageUrl: _editProduct.imageUrl,
-                      id: null,
+                      description: _editedProduct.description,
+                      imageUrl: _editedProduct.imageUrl,
+                      id: _editedProduct.id,
+                      isFavorite: _editedProduct.isFavorite,
                     );
                   }),
               TextFormField(
+                  initialValue: _initValues['description'],
                   decoration: InputDecoration(labelText: 'Description'),
                   maxLines: 3,
                   //We dont need the textInputAction cause the multiline will automatically give us..
                   //..an enter symbol to go to a new line
                   keyboardType: TextInputType.multiline,
                   focusNode: _descriptionFocusNode,
-                  validator: (value){
-                    if(value.isEmpty){
+                  validator: (value) {
+                    if (value.isEmpty) {
                       return 'Please enter a description.';
                     }
                     return null;
                   },
                   onSaved: (value) {
-                    _editProduct = Product(
-                      title: _editProduct.title,
-                      price: _editProduct.price,
+                    _editedProduct = Product(
+                      title: _editedProduct.title,
+                      price: _editedProduct.price,
                       description: value,
-                      imageUrl: _editProduct.imageUrl,
-                      id: null,
+                      imageUrl: _editedProduct.imageUrl,
+                      id: _editedProduct.id,
+                      isFavorite: _editedProduct.isFavorite,
                     );
                   }),
               Row(
@@ -188,24 +230,28 @@ class _EditProductScreen extends State<EditProductScreen> {
                         focusNode: _imageUrlFocusNode,
                         onFieldSubmitted: (_) => _saveForm(),
                         validator: (value) {
-                          if(value.isEmpty){
+                          if (value.isEmpty) {
                             return 'Please enter an image URL';
                           }
-                          if(!value.startsWith('http') && !value.startsWith('http')){
+                          if (!value.startsWith('http') &&
+                              !value.startsWith('http')) {
                             return 'Please enter an image URL';
                           }
-                          if(!value.endsWith('png') && !value.endsWith('jpg') && !value.endsWith('jpeg')){
+                          if (!value.endsWith('png') &&
+                              !value.endsWith('jpg') &&
+                              !value.endsWith('jpeg')) {
                             return 'Please enter a valid image URL';
                           }
                           return null;
                         },
                         onSaved: (value) {
-                          _editProduct = Product(
-                            title: _editProduct.title,
-                            price: _editProduct.price,
-                            description: _editProduct.description,
+                          _editedProduct = Product(
+                            title: _editedProduct.title,
+                            price: _editedProduct.price,
+                            description: _editedProduct.description,
                             imageUrl: value,
-                            id: null,
+                            id: _editedProduct.id,
+                            isFavorite: _editedProduct.isFavorite,
                           );
                         }),
                   ),

@@ -85,8 +85,9 @@ class Products with ChangeNotifier {
 
   //It is better that when you data changes you call notifiListener() from this class the provider
   void addProduct(Product product) {
-    //Problem here is that we dont await for the answer so we dont use the id of the server
-    //We use the date id thats bad
+    //This is async, we send this request but all the things continue, this is why you see that flutter..
+    //..pop out the page and after some miliseconds you see the new product on the screen
+    //..the pop is in edit product...
     final url = 'https://flutter-update-735c3.firebaseio.com/products.json';
     http.post(url, body: json.encode({
       'title': product.title,
@@ -94,16 +95,17 @@ class Products with ChangeNotifier {
       'imageUrl': product.imageUrl,
       'price': product.price,
       'isFavorite': product.isFavorite,
-    }));
-    var newProduct = Product(
+    })).then((response) {
+      var newProduct = Product(
       title: product.title,
       description: product.description,
       price: product.price,
       imageUrl: product.imageUrl,
-      id: DateTime.now().toString(),
+      id: json.decode(response.body),
     );
     _items.add(newProduct);
     notifyListeners();
+    });
   }
 
   void updateProduct(String id, Product newProduct) {

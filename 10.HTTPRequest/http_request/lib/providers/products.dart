@@ -87,7 +87,7 @@ class Products with ChangeNotifier {
   //So this content will be availale some time in the future but not inmideally
   //It will be bad if we await for this to complete cause maybe your internet is slow..
   //..your app will be frozen
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) {
     //This is async, we send this request but all the things continue, this is why you see that flutter..
     //..pop out the page and after some miliseconds you see the new product on the screen
     //..the pop is in edit product...
@@ -96,19 +96,20 @@ class Products with ChangeNotifier {
     //..AND THEN WILL CHECK IF THE FUTURE IS DONE, IT IS IT WILL EXECUTE THAT CODE
     //OF COURSE, THIS IS CAUSE WE DONT USE AWAIT
     final url = 'https://flutter-update-735c3.firebaseio.com/products.json';
-    http.post(url, body: json.encode({
+    //Returning the then method which if a future
+    return http.post(url, body: json.encode({
       'title': product.title,
       'description': product.description,
       'imageUrl': product.imageUrl,
       'price': product.price,
       'isFavorite': product.isFavorite,
     })).then((response) {
-      var newProduct = Product(
+      final newProduct = Product(
       title: product.title,
       description: product.description,
       price: product.price,
       imageUrl: product.imageUrl,
-      id: json.decode(response.body),
+      id: json.decode(response.body)['name'],
     );
     _items.add(newProduct);
     notifyListeners();

@@ -20,6 +20,7 @@ class ProductsOverviewScreen extends StatefulWidget {
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   bool _showOnlyFavorities = false;
   bool _isInit = true;
+  bool _isLoading = false;
 
   //Remember that this method only runs once
   @override
@@ -40,7 +41,14 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   @override
   void didChangeDependencies() {
     if (_isInit) {
-      Provider.of<Products>(context).fetchAndSetProducts();
+      setState(() {
+        _isLoading = true;
+      });
+      Provider.of<Products>(context).fetchAndSetProducts().then((_) {
+        setState(() {
+          _isLoading = false;
+        });
+      });
       _isInit = false;
     }
     super.didChangeDependencies();
@@ -100,7 +108,11 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
       //I am taking the grid away cause i dont wanna rebuild the appBar of this widget
       //Im not using _showOnlyFavorities with the provider cause it will change the list everywhere
       //I am using locally so i transform this widget to statefull
-      body: ProductsGrid(_showOnlyFavorities),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(_showOnlyFavorities),
     );
   }
 }

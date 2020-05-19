@@ -82,7 +82,7 @@ class _EditProductScreen extends State<EditProductScreen> {
     }
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     //Calling all the validate methods: validator(){}
     if (!_form.currentState.validate()) return;
     //Save is a method provider by state object of the form widget which will save that form
@@ -99,12 +99,11 @@ class _EditProductScreen extends State<EditProductScreen> {
       });
       Navigator.of(context).pop();
     } else {
-      Provider.of<Products>(context, listen: false).addProduct(_editedProduct)
-          //After this error well go to the then and close this page up
-          .catchError((error) {
-        //This is another future, Well wait till this is complete, after that well go to the then
-        //If we dont do it like this, well go automacatlly to the the then
-        return showDialog<Null>(
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+        await showDialog<Null>(
             context: context,
             builder: (_) => AlertDialog(
                   title: Text('An error ocuured!'),
@@ -118,14 +117,12 @@ class _EditProductScreen extends State<EditProductScreen> {
                     )
                   ],
                 ));
-      })
-          //This will only be execute after the showDialog if there is an error
-          .then((_) {
+      } finally {
         setState(() {
           _isLoading = false;
         });
         Navigator.of(context).pop();
-      });
+      }
     }
   }
 

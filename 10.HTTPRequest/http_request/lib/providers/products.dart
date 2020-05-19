@@ -87,7 +87,10 @@ class Products with ChangeNotifier {
   //So this content will be availale some time in the future but not inmideally
   //It will be bad if we await for this to complete cause maybe your internet is slow..
   //..your app will be frozen
-  Future<void> addProduct(Product product) {
+
+  //Async wrap all the code in this funcion and put it in a future so you always return a Future and
+  //..you dont have to return future from inside
+  Future<void> addProduct(Product product) async {
     //This is async, we send this request but all the things continue, this is why you see that flutter..
     //..pop out the page and after some miliseconds you see the new product on the screen
     //..the pop is in edit product...
@@ -95,32 +98,35 @@ class Products with ChangeNotifier {
     //IT EXECUTE ALL THE SYNCHRONOUS CODE EVEN THE CODE ON THE EDIT PRODUCT OR THE MAIN..
     //..AND THEN WILL CHECK IF THE FUTURE IS DONE, IT IS IT WILL EXECUTE THAT CODE
     //OF COURSE, THIS IS CAUSE WE DONT USE AWAIT
-    final url = 'https://flutter-update-735c3.firebaseio.com/products.json';
-    //Returning the then method which if a future
-    return http.post(url, body: json.encode({
-      'title': product.title,
-      'description': product.description,
-      'imageUrl': product.imageUrl,
-      'price': product.price,
-      'isFavorite': product.isFavorite,
-    })).then((response) {
+    final url = 'https://flutter-update-735c3.firebaseio.com/products';
+    //With this await, it will await this method to finished and then will go to the other code behind.
+    //Begind the scene it puts the code behind in a then, so it wont pause the execution dont worry its the same
+    try {
+      final response = await http.post(
+        url,
+        body: json.encode({
+          'title': product.title,
+          'description': product.description,
+          'imageUrl': product.imageUrl,
+          'price': product.price,
+          'isFavorite': product.isFavorite,
+        }),
+      );
+
+      //Then behind the scenes
       final newProduct = Product(
-      title: product.title,
-      description: product.description,
-      price: product.price,
-      imageUrl: product.imageUrl,
-      id: json.decode(response.body)['name'],
-    );
-    _items.add(newProduct);
-    notifyListeners();
-    })
-    //Putting the catchError here is better cause we are catching error for the post and for the then
-    //If the error is thown in the post method the then method will be skipped
-    //If i put the catch before the then, the login on the then method will run after the catch
-    .catchError((error) {
+        title: product.title,
+        description: product.description,
+        price: product.price,
+        imageUrl: product.imageUrl,
+        id: json.decode(response.body)['name'],
+      );
+      _items.add(newProduct);
+      notifyListeners();
+    } catch (error) {
       print(error);
       throw error;
-    });
+    }
   }
 
   void updateProduct(String id, Product newProduct) {
@@ -131,7 +137,7 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id){
+  void deleteProduct(String id) {
     _items.removeWhere((prod) => prod.id == id);
     notifyListeners();
   }

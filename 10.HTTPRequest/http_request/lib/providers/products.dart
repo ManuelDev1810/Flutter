@@ -113,6 +113,13 @@ class Products with ChangeNotifier {
     );
     _items.add(newProduct);
     notifyListeners();
+    })
+    //Putting the catchError here is better cause we are catching error for the post and for the then
+    //If the error is thown in the post method the then method will be skipped
+    //If i put the catch before the then, the login on the then method will run after the catch
+    .catchError((error) {
+      print(error);
+      throw error;
     });
   }
 

@@ -99,8 +99,27 @@ class _EditProductScreen extends State<EditProductScreen> {
       });
       Navigator.of(context).pop();
     } else {
-      Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct)
+      Provider.of<Products>(context, listen: false).addProduct(_editedProduct)
+          //After this error well go to the then and close this page up
+          .catchError((error) {
+        //This is another future, Well wait till this is complete, after that well go to the then
+        //If we dont do it like this, well go automacatlly to the the then
+        return showDialog<Null>(
+            context: context,
+            builder: (_) => AlertDialog(
+                  title: Text('An error ocuured!'),
+                  content: Text('Something went wrong!'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('Okay'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                    )
+                  ],
+                ));
+      })
+          //This will only be execute after the showDialog if there is an error
           .then((_) {
         setState(() {
           _isLoading = false;

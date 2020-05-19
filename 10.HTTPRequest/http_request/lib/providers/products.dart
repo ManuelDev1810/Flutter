@@ -83,6 +83,16 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> fetchAndSetProducts() async{
+    final url = 'https://flutter-update-735c3.firebaseio.com/products.json';
+    try {
+      final response = await http.get(url);
+      print(json.decode(response.body));
+    }catch(error){
+      throw error;
+    }
+  }
+
   //Async code, is code that runs and that should not stop other code from counting
   //So this content will be availale some time in the future but not inmideally
   //It will be bad if we await for this to complete cause maybe your internet is slow..
@@ -98,7 +108,7 @@ class Products with ChangeNotifier {
     //IT EXECUTE ALL THE SYNCHRONOUS CODE EVEN THE CODE ON THE EDIT PRODUCT OR THE MAIN..
     //..AND THEN WILL CHECK IF THE FUTURE IS DONE, IT IS IT WILL EXECUTE THAT CODE
     //OF COURSE, THIS IS CAUSE WE DONT USE AWAIT
-    final url = 'https://flutter-update-735c3.firebaseio.com/products';
+    final url = 'https://flutter-update-735c3.firebaseio.com/products.json';
     //With this await, it will await this method to finished and then will go to the other code behind.
     //Begind the scene it puts the code behind in a then, so it wont pause the execution dont worry its the same
     try {

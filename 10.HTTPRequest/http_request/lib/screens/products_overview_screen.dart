@@ -5,6 +5,7 @@ import '../widgets/products_grid.dart';
 import '../widgets/badge.dart';
 import '../providers/cart.dart' as Cart;
 import '../screens/cart_screen.dart';
+import '../providers/products.dart';
 
 enum FilterOptions {
   Favorities,
@@ -18,6 +19,32 @@ class ProductsOverviewScreen extends StatefulWidget {
 
 class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
   bool _showOnlyFavorities = false;
+  bool _isInit = true;
+
+  //Remember that this method only runs once
+  @override
+  void initState() {
+    //WONT WORK, WE ARE USING CONTEXT HERE, THE WIDGET IS NOT READY, NOW IT WORKS IF YOU PUT LISTE: FALSE
+    //OTHERWISE THIS WILL BE THE PERFECT SOLUTION
+    // Provider.of<Products>(context).fetchAndSetProducts();
+
+    //Other solution like putting the LISTEN:FALSE is this, cause Flutter order this diffent, it is a to do
+    // Future.delayed(Duration.zero).then((_) {
+    //   Provider.of<Products>(context).fetchAndSetProducts();
+    // });
+    super.initState();
+  }
+
+  //Another way, this runs after the widget is ready and before the build runs for the first time
+  //But this runs a couple of times, so for that is the logic
+  @override
+  void didChangeDependencies() {
+    if (_isInit) {
+      Provider.of<Products>(context).fetchAndSetProducts();
+      _isInit = false;
+    }
+    super.didChangeDependencies();
+  }
 
   @override
   Widget build(BuildContext context) {

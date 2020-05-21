@@ -83,8 +83,8 @@ class Products with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchAndSetProducts() async{
-    final url = 'https://flutter-update-735c3.firebaseio.com/products.json';
+  Future<void> fetchAndSetProducts() async {
+    const url = 'https://flutter-update-735c3.firebaseio.com/products.json';
     try {
       final response = await http.get(url);
       final extractedData = json.decode(response.body) as Map<String, dynamic>;
@@ -101,7 +101,7 @@ class Products with ChangeNotifier {
       });
       _items = loadedProducts;
       notifyListeners();
-    }catch(error){
+    } catch (error) {
       throw error;
     }
   }
@@ -121,7 +121,7 @@ class Products with ChangeNotifier {
     //IT EXECUTE ALL THE SYNCHRONOUS CODE EVEN THE CODE ON THE EDIT PRODUCT OR THE MAIN..
     //..AND THEN WILL CHECK IF THE FUTURE IS DONE, IT IS IT WILL EXECUTE THAT CODE
     //OF COURSE, THIS IS CAUSE WE DONT USE AWAIT
-    final url = 'https://flutter-update-735c3.firebaseio.com/products.json';
+    const url = 'https://flutter-update-735c3.firebaseio.com/products.json';
     //With this await, it will await this method to finished and then will go to the other code behind.
     //Begind the scene it puts the code behind in a then, so it wont pause the execution dont worry its the same
     try {
@@ -152,11 +152,24 @@ class Products with ChangeNotifier {
     }
   }
 
-  void updateProduct(String id, Product newProduct) {
+  Future<void> updateProduct(String id, Product newProduct) async {
     final prodIndex = items.indexWhere((prod) => prod.id == id);
     if (prodIndex >= 0) {
-      _items[prodIndex] = newProduct;
-      notifyListeners();
+      final url =
+          'https://flutter-update-735c3.firebaseio.com/products/$id.json';
+      try {
+        await http.patch(url,
+            body: json.encode({
+              'title': newProduct.title,
+              'description': newProduct.description,
+              'imageUrl': newProduct.imageUrl,
+              'price': newProduct.price,
+            }));
+        _items[prodIndex] = newProduct;
+        notifyListeners();
+      } catch (error) {
+        
+      }
     }
   }
 

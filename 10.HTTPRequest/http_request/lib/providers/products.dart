@@ -167,14 +167,27 @@ class Products with ChangeNotifier {
             }));
         _items[prodIndex] = newProduct;
         notifyListeners();
-      } catch (error) {
-        
-      }
+      } catch (error) {}
     }
   }
 
   void deleteProduct(String id) {
-    _items.removeWhere((prod) => prod.id == id);
+    //Optimisc Updating, this ensure that i re-add the product if something fails
+    final url = 'https://flutter-update-735c3.firebaseio.com/products/$id';
+    final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
+    var existingProduct = _items.firstWhere((prod) => prod.id == id);
+    http.delete(url).then((response){
+      //When deleting it doesn go to the catch 
+      if(response.statusCode >= 400){
+        
+      }
+      existingProduct = null; //Clearing up the memory, no one is interested on it
+    }).catchError((_) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+    });
+    //We dont wait for this remeber
+    _items.removeAt(existingProductIndex);
     notifyListeners();
   }
 }

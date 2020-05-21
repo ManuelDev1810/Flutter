@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import '../models/http_exception.dart';
 import './product.dart';
 
 //Mix In: It's like a class with a bunch or things or UTILITIES that you may need and use without exteding
@@ -171,23 +172,35 @@ class Products with ChangeNotifier {
     }
   }
 
-  void deleteProduct(String id) {
+  Future<void> deleteProduct(String id) async {
     //Optimisc Updating, this ensure that i re-add the product if something fails
-    final url = 'https://flutter-update-735c3.firebaseio.com/products/$id';
+    final url = 'https://flutter-update-735c3.firebaseio.com/products/$id.json';
     final existingProductIndex = _items.indexWhere((prod) => prod.id == id);
-    var existingProduct = _items.firstWhere((prod) => prod.id == id);
-    http.delete(url).then((response){
-      //When deleting it doesn go to the catch 
-      if(response.statusCode >= 400){
-        
-      }
-      existingProduct = null; //Clearing up the memory, no one is interested on it
-    }).catchError((_) {
-      _items.insert(existingProductIndex, existingProduct);
-      notifyListeners();
-    });
-    //We dont wait for this remeber
+    var existingProduct = _items[existingProductIndex];
+    // http.delete(url).then((response){
+    //   //When deleting it doesn go to the catch
+    //   if(response.statusCode >= 400){
+    //     throw HttpException('Could not delete product');
+    //   }
+    //   existingProduct = null; //Clearing up the memory, no one is interested on it
+    // }).catchError((_) {
+    //   _items.insert(existingProductIndex, existingProduct);
+    //   notifyListeners();
+    // });
+    // //We dont wait for this remeber
+    // _items.removeAt(existingProductIndex);
+    // notifyListeners();
+
+    //With Async, here we await in the then we DONT
     _items.removeAt(existingProductIndex);
     notifyListeners();
+    final response = await http.delete(url);
+    //When deleting it doesn go to the catch
+    if (response.statusCode >= 400) {
+      _items.insert(existingProductIndex, existingProduct);
+      notifyListeners();
+      throw HttpException('Could not delete product');
+    }
+    existingProduct = null; //Clearing up the memory, no one is interested on it
   }
 }

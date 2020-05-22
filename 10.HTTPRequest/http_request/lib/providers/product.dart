@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 //Now this Class can notify listener when they changes
 class Product with ChangeNotifier {
@@ -18,8 +20,25 @@ class Product with ChangeNotifier {
     this.isFavorite = false,
   });
 
-  void toggleFavoriteStatus() {
-    isFavorite = !isFavorite;
+  void setFavValue(bool value) {
+    isFavorite = value;
     notifyListeners();
+  }
+
+  void toggleFavoriteStatus() async {
+    final oldStatus = isFavorite;
+    setFavValue(!isFavorite);
+    final url = 'https://flutter-update-735c3.firebaseio.com/products/$id.json';
+    try {
+      final response = await http.patch(url,
+          body: json.encode({
+            'isFavorite': isFavorite,
+          }));
+      if (response.statusCode >= 400) {
+        setFavValue(oldStatus);
+      }
+    } catch (error) {
+      setFavValue(oldStatus);
+    }
   }
 }

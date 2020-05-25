@@ -18,10 +18,8 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     // Future.delayed(Duration.zero).then((_) {});
-    //Remeber this runs after the build
-    setState(() {
-      _isLoading = true;
-    });
+    //This will run before build runs
+    _isLoading = true;
     Provider.of<Orders>(context, listen: false).fetchAndSetOrders().then((_) {
       setState(() {
         _isLoading = false;
